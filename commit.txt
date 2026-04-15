@@ -1,4 +1,0 @@
-chore: Setup GitHub Actions deployment for Pages
-
-- Configured Vite `base` URL for deployment resolution.
-- Added official GitHub Actions workflow to auto-build and deploy to GitHub Pages environment seamlessly.
