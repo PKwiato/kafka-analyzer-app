@@ -38,9 +38,12 @@ export function useCsvProcessor(settings: AppSettings) {
   const processResults = (data: any[]) => {
     const totalRows = data.length;
     const leagueIdColumn = 'League.Id';
+    const isWildcard = settings.leagueIds.length === 0 || settings.leagueIds.includes('*');
     const selectedIdsSet = new Set(settings.leagueIds.map(id => String(id)));
 
-    const matchedRows = data.filter(row => selectedIdsSet.has(String(row[leagueIdColumn])));
+    const matchedRows = isWildcard 
+      ? data 
+      : data.filter(row => selectedIdsSet.has(String(row[leagueIdColumn])));
     const matchedCount = matchedRows.length;
     
     let missingCount = 0;

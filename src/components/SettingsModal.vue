@@ -21,8 +21,8 @@ const removeField = (settings: AppSettings, index: number) => {
 const updateLeagueIds = (settings: AppSettings, e: Event) => {
   const target = e.target as HTMLTextAreaElement;
   settings.leagueIds = target.value.split(/[\s,]+/)
-    .map(s => parseInt(s.trim()))
-    .filter(n => !isNaN(n));
+    .map(s => s.trim())
+    .filter(s => s !== '');
 };
 </script>
 
