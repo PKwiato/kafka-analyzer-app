@@ -10,6 +10,7 @@ export interface AnalysisResults {
   tableData: any[];
   percentMatched: string;
   percentFailedInMatched: string;
+  percentPassed: string;
   percentMissing: string;
   percentPartial: string;
   percentOver: string;
@@ -136,6 +137,7 @@ export function useCsvProcessor(settings: AppSettings) {
       tableData,
       percentMatched: ((matchedCount / totalRows) * 100).toFixed(2),
       percentFailedInMatched: matchedCount > 0 ? ((failedCount / matchedCount) * 100).toFixed(2) : '0.00',
+      percentPassed: matchedCount > 0 ? ((passedCount / matchedCount) * 100).toFixed(2) : '0.00',
       percentMissing: failedCount > 0 ? ((missingCount / failedCount) * 100).toFixed(2) : '0.00',
       percentPartial: failedCount > 0 ? ((partialCount / failedCount) * 100).toFixed(2) : '0.00',
       percentOver: failedCount > 0 ? ((overCount / failedCount) * 100).toFixed(2) : '0.00',
