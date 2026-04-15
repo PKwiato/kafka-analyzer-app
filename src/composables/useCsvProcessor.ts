@@ -12,8 +12,10 @@ export interface AnalysisResults {
   percentFailedInMatched: string;
   percentMissing: string;
   percentPartial: string;
+  percentOver: string;
   missingMatchCount: number;
   partialMatchCount: number;
+  overMatchCount: number;
   chart1Data: { labels: string[], datasets: any[] };
   chart2Data: { labels: string[], datasets: any[] };
   chart3Data: { labels: string[], datasets: any[] };
@@ -42,6 +44,7 @@ export function useCsvProcessor(settings: AppSettings) {
     
     let missingCount = 0;
     let partialCount = 0;
+    let overCount = 0;
 
     const metCriteriaRows = matchedRows.filter(row => {
       const results = settings.analysisFields.map(field => {
@@ -62,8 +65,16 @@ export function useCsvProcessor(settings: AppSettings) {
 
       if (criteriaMet) {
         const isMissing = settings.analysisFields.some(field => parseFloat(row[field.columnHeader]) === 0);
+        
+        const isOver = settings.analysisFields.some(field => {
+          const val = parseFloat(row[field.columnHeader]);
+          return field.operator === '>' && val > field.value;
+        });
+
         if (isMissing) {
           missingCount++;
+        } else if (isOver) {
+          overCount++;
         } else {
           partialCount++;
         }
@@ -127,8 +138,10 @@ export function useCsvProcessor(settings: AppSettings) {
       percentFailedInMatched: matchedCount > 0 ? ((failedCount / matchedCount) * 100).toFixed(2) : '0.00',
       percentMissing: failedCount > 0 ? ((missingCount / failedCount) * 100).toFixed(2) : '0.00',
       percentPartial: failedCount > 0 ? ((partialCount / failedCount) * 100).toFixed(2) : '0.00',
+      percentOver: failedCount > 0 ? ((overCount / failedCount) * 100).toFixed(2) : '0.00',
       missingMatchCount: missingCount,
       partialMatchCount: partialCount,
+      overMatchCount: overCount,
       chart1Data: {
         labels: ['Matched IDs', 'Other IDs'],
         datasets: [{
@@ -144,10 +157,10 @@ export function useCsvProcessor(settings: AppSettings) {
         }]
       },
       chart3Data: {
-        labels: ['Missing (0)', 'Partial (>0)'],
+        labels: ['Missing (0)', 'Partial (>0)', 'Over (> Set)'],
         datasets: [{
-          backgroundColor: ['#f97316', '#eab308'],
-          data: [missingCount, partialCount]
+          backgroundColor: ['#f97316', '#eab308', '#a855f7'],
+          data: [missingCount, partialCount, overCount]
         }]
       },
       chart4Data: {

@@ -28,6 +28,10 @@ defineProps<{
       <span class="stat-label">Partial (>0)</span>
       <p class="stat-value text-yellow">{{ results.percentPartial }}% <small>({{ results.partialMatchCount }})</small></p>
     </div>
+    <div class="stat-card">
+      <span class="stat-label">Over (> Set)</span>
+      <p class="stat-value text-purple">{{ results.percentOver }}% <small>({{ results.overMatchCount }})</small></p>
+    </div>
   </div>
 </template>
 
@@ -70,6 +74,7 @@ defineProps<{
 .text-red { color: #ef4444; }
 .text-orange { color: #f97316; }
 .text-yellow { color: #eab308; }
+.text-purple { color: #a855f7; }
 
 @media (max-width: 768px) {
   .stats-grid { grid-template-columns: 1fr; }
