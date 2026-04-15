@@ -1,7 +1,8 @@
 <script setup lang="ts">
+import { computed } from 'vue';
 import type { AppSettings } from '../settings';
 
-defineProps<{
+const props = defineProps<{
   settings: AppSettings;
   filteredTableData: any[];
   showOnlyFailed: boolean;
@@ -11,6 +12,12 @@ const emit = defineEmits<{
   (e: 'update:showOnlyFailed', value: boolean): void;
   (e: 'toggle-sort', key: string): void;
 }>();
+
+const uniqueFields = computed(() => {
+  const fields = new Set<string>();
+  props.settings.analysisFields.forEach(f => fields.add(f.columnHeader));
+  return Array.from(fields);
+});
 </script>
 
 <template>
@@ -41,12 +48,12 @@ const emit = defineEmits<{
             <th @click="emit('toggle-sort', 'name')" class="sortable">Fixture</th>
             <th @click="emit('toggle-sort', 'league')" class="sortable">League</th>
             <th @click="emit('toggle-sort', 'leagueId')" class="sortable">League ID</th>
-            <th v-for="field in settings.analysisFields" 
-                :key="field.columnHeader" 
-                @click="emit('toggle-sort', 'field:' + field.columnHeader)"
+            <th v-for="fieldName in uniqueFields" 
+                :key="fieldName" 
+                @click="emit('toggle-sort', 'field:' + fieldName)"
                 class="sortable text-center"
             >
-              {{ field.columnHeader }}
+              {{ fieldName }}
             </th>
             <th @click="emit('toggle-sort', 'passed')" class="sortable">Status</th>
           </tr>
@@ -57,8 +64,8 @@ const emit = defineEmits<{
             <td>{{ row.name }}</td>
             <td><span class="league-pill">{{ row.league }}</span></td>
             <td><span class="league-pill">{{ row.leagueId }}</span></td>
-            <td v-for="field in settings.analysisFields" :key="field.columnHeader" class="text-center">
-              <span class="field-val">{{ row.fields[field.columnHeader] }}</span>
+            <td v-for="fieldName in uniqueFields" :key="fieldName" class="text-center">
+              <span class="field-val">{{ row.fields[fieldName] }}</span>
             </td>
             <td>
               <span :class="['status-badge', row.passed ? 'status-pass' : 'status-fail']">
